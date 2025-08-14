@@ -1,3 +1,6 @@
+<%@page import="com.kkuk.member.MemberDto"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
 <%@page import="java.sql.Date"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
@@ -9,15 +12,15 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원 정보 조회</title>
+<title>모든 회원 정보 리스트</title>
 </head>
 <body>
-	<h2>회원 정보 조회</h2>
+	<h2>회원 정보 리스트</h2>
 	<hr>
 	<%
 		request.setCharacterEncoding("utf-8");
 		
-		String mid = request.getParameter("sid"); // 조회할 아이디
+		//String mid = request.getParameter("sid"); // 조회할 아이디
 		
 		// DB 에 삽입할 데이터 준비 완료
 	
@@ -31,14 +34,18 @@
 		String password = "12345"; // DB 비밀번호
 
 		//SQL문 제작 
-		//String sql = "SELECT * FROM members";
-		String sql = "SELECT * FROM members WHERE memberid = '"+mid+"'";
+		String sql = "SELECT * FROM members"; // 모든 회원 리스트 반환
+		//String sql = "SELECT * FROM members WHERE memberid = '"+mid+"'";
 		//MySQL에서 이해할 수 있는 문법으로 작성해야함
 		
 		
 		Connection conn = null; // 커넥션 인터페이스로 선언 후 null로 초기값 선언
 		Statement stmt = null; // sql문을 관리해주는 객체를 선언해주는 인터페이스로 stmt 선언
 		ResultSet rs = null; // SELECT문 실행시 DB에서 반환해주는 레코드 결과를 받아주는 자료타입 rs선언
+		
+		List<MemberDto> memberList = new ArrayList<MemberDto>(); 
+		// 1명의 회원정보 DTO 객체들이 여러개 저장 될 리스트 선언
+		
 		
 		
 		try{ // 에러 날 가능성이 높기때문에 예외처리 필수 트라이 캣치
@@ -50,33 +57,26 @@
 			// select문 실행 -> 결과가 DB로부터 반환-> 그 결과(레코드(행))을 받아주는 ResultSet 타입 객체로 받아야함
 		//	String sid = null;
 				
-				if(rs.next()){ // 참이면 레코드가 1개 이상 존재 -> 아이디가 존재
-					do { // rs에서 레코드를 추출하는 방법 hasnext
-					 	String sid = rs.getString("memberid");
-						String spw = rs.getString("memberpw");
-						String sname = rs.getString("membername");
-						String semail = rs.getString("memberemail");
-						String sdate = rs.getString("memberdate");
-						
-						out.println("******조회 회원 정보*******<br>");
-						out.println(sid + " / " + spw + " / " + sname + " / " + semail + " / " + sdate );
-						}while(rs.next());
-				} else { // 레코드가 0개 일경우 -> 아이디 존재하지않음
-					out.println("******정보가 존재하지 않습니다.*******<br>");
+				while(rs.next()){
+					MemberDto memberDto = new MemberDto();
+					memberDto.setMemberid(rs.getString("memberid")); 
+					memberDto.setMemberpw(rs.getString("memberpw")); 
+					memberDto.setMembername(rs.getString("membername")); 
+					memberDto.setMemberemail(rs.getString("memberemail")); 
+					memberDto.setMemberedate(rs.getString("memberdate")); 
+					
+					memberList.add(memberDto);
+				}
+			
+				for(MemberDto mDto : memberList){
+					out.println(mDto.getMemberid() + " / ");
+					out.println(mDto.getMemberpw() + " / ");
+					out.println(mDto.getMembername() + " / ");
+					out.println(mDto.getMemberemail() + " / ");
+					out.println( mDto.getMemberdate() + "<br>");
+					
 				}
 				
-			//if(sid == null){
-				//out.println("******정보가 존재하지 않습니다.*******<br>");
-			//}
-				
-			// int sqlResult = stmt.executeUpdate(sql); // SQL문을 DB에서 실행 -> 성공하면 1이 반환
-			//System.out.println("수정된 값 : " + sqlResult);
-			//if(sqlResult == 1){ // 1 이 반환되면 삭제 성공
-				//out.println(mid + "회원 탈퇴 성공");
-			//} else{
-				//out.println(mid + "회원 탈퇴 실패 , 존재하지 않는 아이디입니다.");
-		//	}
-			
 		} catch (Exception e) {
 			out.println("DB 에러 실패");
 			e.printStackTrace(); // 에러 내용 출력
