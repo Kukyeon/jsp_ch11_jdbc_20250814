@@ -7,16 +7,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원 가입 처리 </title>
+<title>회원 탈퇴 처리 </title>
 </head>
 <body>
 	<%
 		request.setCharacterEncoding("utf-8");
 		
-		String mid = request.getParameter("mid"); // 아이디
-		String mpw = request.getParameter("mpw");
-		String mname = request.getParameter("mname");
-		String memail = request.getParameter("memail");
+		String mid = request.getParameter("outid"); // 탈퇴할 아이디
 		
 		// DB 에 삽입할 데이터 준비 완료
 	
@@ -30,7 +27,7 @@
 		String password = "12345"; // DB 비밀번호
 
 		//SQL문 제작 
-		String sql = "INSERT INTO members(memberid, memberpw, membername, memberemail) VALUES ('"+mid+"','"+mpw+"','"+mname+"','"+memail+"')";
+		String sql = "DELETE FROM members WHERE memberid = '"+mid+"'";
 		//MySQL에서 이해할 수 있는 문법으로 작성해야함
 		
 		Connection conn = null; // 커넥션 인터페이스로 선언 후 null로 초기값 선언
@@ -44,6 +41,11 @@
 			
 			int sqlResult = stmt.executeUpdate(sql); // SQL문을 DB에서 실행 -> 성공하면 1이 반환
 			System.out.println("수정된 값 : " + sqlResult);
+			if(sqlResult == 1){ // 1 이 반환되면 삭제 성공
+				out.println(mid + "회원 탈퇴 성공");
+			} else{
+				out.println(mid + "회원 탈퇴 실패 , 존재하지 않는 아이디입니다.");
+			}
 			
 		} catch (Exception e) {
 			out.println("DB 에러났다요 회원 가입 실패 ㅋㅋㅋㅋㅋ");
