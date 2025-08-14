@@ -31,7 +31,7 @@
 		String password = "12345"; // DB 비밀번호
 
 		//SQL문 제작 
-		String sql = "SELECT * FROM members";
+		String sql = "SELECT * FROM members WHERE memberid = '"+mid+"'";
 		//MySQL에서 이해할 수 있는 문법으로 작성해야함
 		
 		
@@ -58,7 +58,7 @@
 						String sdate = rs.getString("memberdate");
 						
 						out.println("******조회 회원 정보*******<br>");
-						out.println(sid + " / " + spw + " / " + sname + " / " + semail + " / " + sdate  + "<br>");
+						out.println(sid + " / " + spw + " / " + sname + " / " + semail + " / " + sdate );
 						}while(rs.next());
 				} else { // 레코드가 0개 일경우 -> 아이디 존재하지않음
 					out.println("******정보가 존재하지 않습니다.*******<br>");
