@@ -1,3 +1,4 @@
+<%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Date"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
@@ -32,21 +33,23 @@
 
 		//SQL문 제작 
 		//String sql = "SELECT * FROM members";
-		String sql = "SELECT * FROM members WHERE memberid = '"+mid+"'";
+		String sql = "SELECT * FROM members WHERE memberid = ?";
 		//MySQL에서 이해할 수 있는 문법으로 작성해야함
 		
 		
 		Connection conn = null; // 커넥션 인터페이스로 선언 후 null로 초기값 선언
 		Statement stmt = null; // sql문을 관리해주는 객체를 선언해주는 인터페이스로 stmt 선언
 		ResultSet rs = null; // SELECT문 실행시 DB에서 반환해주는 레코드 결과를 받아주는 자료타입 rs선언
-		
+		PreparedStatement pstmt = null;
 		
 		try{ // 에러 날 가능성이 높기때문에 예외처리 필수 트라이 캣치
 			Class.forName(driverName); // MySQL 드라이버 클래스 불러오기
 			conn = DriverManager.getConnection(url, username, password);
 			//conn 커넥션이 메모리에 생성이됨 (DB와의 연결 커넥션 conn 생성)
-			stmt = conn.createStatement(); // stmt 객체 생성
-			rs = stmt.executeQuery(sql);
+			//stmt = conn.createStatement(); // stmt 객체 생성
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, mid);
+			rs = pstmt.executeQuery();
 			// select문 실행 -> 결과가 DB로부터 반환-> 그 결과(레코드(행))을 받아주는 ResultSet 타입 객체로 받아야함
 		//	String sid = null;
 				
@@ -85,7 +88,7 @@
 				if(rs != null){
 					rs.close();
 				}
-				if(stmt != null){ // stmt가 null 아니면 닫기 (conn 보다 먼저 실행되어야함)
+				if(pstmt != null){ // stmt가 null 아니면 닫기 (conn 보다 먼저 실행되어야함)
 					stmt.close();
 				}
 				if(conn != null){ // 커넥션이 null이 아닐때만 닫기
