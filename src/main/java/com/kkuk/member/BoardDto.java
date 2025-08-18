@@ -1,6 +1,6 @@
 package com.kkuk.member;
 
-public class boardDto {
+public class BoardDto {
 
 	
 	private String bnum;
@@ -8,11 +8,11 @@ public class boardDto {
 	private String bcontent;
 	private String memberid;
 	private String bdate;
-	public boardDto() {
+	public BoardDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public boardDto(String bnum, String btitle, String bcontent, String memberid, String bdate) {
+	public BoardDto(String bnum, String btitle, String bcontent, String memberid, String bdate) {
 		super();
 		this.bnum = bnum;
 		this.btitle = btitle;
